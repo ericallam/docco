@@ -97,7 +97,7 @@ parse = (source, code) ->
 
 # Highlights a single chunk of CoffeeScript code, using **Pygments** over stdio,
 # and runs the text of its corresponding comment through **Markdown**, using
-# [Showdown.js](http://attacklab.net/showdown/).
+# [marked](https://github.com/chjj/marked).
 #
 # We process the entire file in a single call to Pygments by inserting little
 # marker comments between each section and then splitting the result string
@@ -122,7 +122,7 @@ highlight = (source, sections, callback) ->
     fragments = output.split language.divider_html
     for section, i in sections
       section.code_html = highlight_start + fragments[i] + highlight_end
-      section.docs_html = showdown.makeHtml section.docs_text
+      section.docs_html = marked section.docs_text
     callback()
     
   if pygments.stdin.writable
@@ -143,11 +143,12 @@ generate_html = (source, sections) ->
 
 #### Helpers & Setup
 
-# Require our external dependencies, including **Showdown.js**
+# Require our external dependencies, including **marked**
 # (the JavaScript implementation of Markdown).
 fs       = require 'fs'
 path     = require 'path'
-showdown = require('./../vendor/showdown').Showdown
+marked   = require('marked')
+
 {spawn, exec} = require 'child_process'
 
 # A list of the languages that Docco supports, mapping the file extension to
